@@ -8,6 +8,10 @@ on:
       - README.md
       - LICENSE
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test:
     name: Test
