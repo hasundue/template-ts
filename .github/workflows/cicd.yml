@@ -13,11 +13,11 @@ permissions:
   pull-requests: write
 
 jobs:
-  test:
-    name: Test
+  ci:
+    name: CI
     uses: ./.github/workflows/ci.yml
 
   release:
     name: Release
-    needs: test
+    needs: ci
     uses: ./.github/workflows/release.yml
