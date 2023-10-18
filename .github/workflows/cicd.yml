@@ -1,0 +1,19 @@
+name: CI/CD
+
+on:
+  push:
+    branches: 
+      - main
+    paths-ignore:
+      - README.md
+      - LICENSE
+
+jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Release
+    needs: test
+    uses: ./.github/workflows/release.yml
