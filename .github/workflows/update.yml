@@ -28,8 +28,7 @@ jobs:
           git config user.email '${{ github.actor }}@users.noreply.github.com'
 
       - name: Update dependencies
-        run: |
-          deno task -q update:commit --summary title.txt --report body.md --pre-commit lock test
+        run: deno task -q update:commit --summary title.txt --report body.md
 
       - name: Check result
         id: result
@@ -39,7 +38,7 @@ jobs:
 
       - name: Push changes
         if: steps.result.outputs.files_exists == 'true'
-        run: git push -f origin main:build/update-dependencies
+        run: git push -f origin HEAD:build/update-dependencies
 
       - name: Create a pull request
         if: steps.result.outputs.files_exists == 'true'
