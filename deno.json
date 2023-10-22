@@ -1,15 +1,14 @@
 {
   "tasks": {
-    "fmt": "deno fmt",
-    "lint": "deno lint",
     "cache": "deno cache ./**/*.ts --lock",
-    "lock": "deno task cache --lock-write && git add deno.lock",
-    "test": "deno test --parallel",
-    "dev": "deno task fmt && deno task lint && deno task lock && deno task test",
+    "lock": "deno task -q cache --lock-write && git add deno.lock",
+    "check": "deno check ./**/*.ts",
+    "test": "deno test --no-check --parallel",
+    "dev": "deno fmt && deno lint && deno task -q lock && deno task -q test",
     "run": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net=deno.land,registry.npm.js",
-    "molt": "deno task -q run https://deno.land/x/molt@0.7.2/cli.ts",
-    "update": "deno task -q molt check ./lib/**/*.ts",
-    "update:commit": "deno task -q molt update ./**/*.ts --commit"
+    "molt": "deno task -q run https://deno.land/x/molt@0.7.3/cli.ts",
+    "update": "deno task -q molt check ./**/*.ts",
+    "update:commit": "deno task -q molt update ./**/*.ts --commit --pre-commit=lock,test"
   },
   "fmt": {
     "exclude": [
