@@ -1,0 +1,51 @@
+name: Update
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: 1.x
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor }}@users.noreply.github.com'
+
+      - name: Update dependencies
+        run: |
+          deno task -q update:commit --summary title.txt --report body.md --pre-commit lock test
+
+      - name: Check result
+        id: result
+        uses: andstor/file-existence-action@v2
+        with:
+          files: title.txt, body.md
+
+      - name: Push changes
+        if: steps.result.outputs.files_exists == 'true'
+        run: git push -f origin main:build/update-dependencies
+
+      - name: Create a pull request
+        if: steps.result.outputs.files_exists == 'true'
+        run: >
+          gh pr create --title "$(cat title.txt)" --body "$(cat body.md)"
+          --base "main" --head "build/update-dependencies"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
